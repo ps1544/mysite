@@ -207,18 +207,18 @@ def viewFilingWoExt(request, symbol, filingType, fileName):
 
     if os.path.exists(path) and os.path.isfile(path):
         f = open(path, 'r')
-        file_content = f.read()
+        file_contents = f.read()
         f.close()
-        if file_content == "":
-            template = loader.get_template('polls/filingsAndSearch.html')
-            context = {
-                'filings': file_content,
-            }
-            return HttpResponse(template.render(context, request))
+        
+    template = loader.get_template('polls/filingsAndSearch.html')
+    context = {
+        'filings': file_contents,
+    }
+    return HttpResponse(template.render(context, request))
             #else:
             #return HttpResponse(file_content, content_type="text/html")
-    else:
-        return HttpResponse("File not found.") #TODO: Improve error as well as the message
+    #else:
+     #   return HttpResponse("File not found.") #TODO: Improve error as well as the message
 
     
 

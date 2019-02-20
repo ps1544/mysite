@@ -1,0 +1,18 @@
+body {
+    background: #20262E;
+    background-color: powderblue;
+    background-position: right top;
+    padding: 20px;
+    font-family: Helvetica;
+  }
+  
+body { margin: 20px}
+.row, .col { overflow: hidden; position: absolute; }
+.row { left: 200px; right: 200px; }
+.col { top: 200px; bottom: 200px; }
+.scroll-x { overflow-x: auto; }
+.scroll-y { overflow-y: auto; }
+
+.header.row { height: 75px; top: 200px; }
+.body.row { top: 75px; bottom: 50px; }
+.footer.row { height: 50px; bottom: 200px; }
