@@ -192,13 +192,35 @@ def filingsByGivenTypeForSymbol(request, symbol, filingType):
     for content in contents:
         #content = os.path.splitext(content)[0]
         filings.append(symbol+"/"+filingType+"/"+content)
-        
     
     template = loader.get_template('polls/filingsByGivenTypeForSymbol.html')
     context = {
         'filings': filings,
     }
     return HttpResponse(template.render(context, request))
+
+def viewFilingWoExt(request, symbol, filingType, fileName):
+    baseDir = "C:/Users/pshar/Dropbox/Programming/SampleTexts/FilingsBySymbols"
+    #fileName = fileName + ".htm"
+    path = os.path.join(baseDir, symbol, filingType, fileName)
+    print(path)
+
+    if os.path.exists(path) and os.path.isfile(path):
+        f = open(path, 'r')
+        file_content = f.read()
+        f.close()
+        if file_content == "":
+            template = loader.get_template('polls/filingsAndSearch.html')
+            context = {
+                'filings': file_content,
+            }
+            return HttpResponse(template.render(context, request))
+            #else:
+            #return HttpResponse(file_content, content_type="text/html")
+    else:
+        return HttpResponse("File not found.") #TODO: Improve error as well as the message
+
+    
 
 def viewFiling(request, symbol, filingType, fileName, fileExt):
     baseDir = "C:/Users/pshar/Dropbox/Programming/SampleTexts/FilingsBySymbols"
@@ -214,21 +236,6 @@ def viewFiling(request, symbol, filingType, fileName, fileExt):
     else:
         return HttpResponse("File not found.")
 
-def viewFilingWoExt(request, symbol, filingType, fileName):
-    baseDir = "C:/Users/pshar/Dropbox/Programming/SampleTexts/FilingsBySymbols"
-    #fileName = fileName + ".htm"
-    path = os.path.join(baseDir, symbol, filingType, fileName)
-    print(path)
-    if os.path.exists(path) and os.path.isfile(path):
-        f = open(path, 'r')
-        file_content = f.read()
-        f.close()
-        if file_content == "":
-            return HttpResponse("File contents empty.")
-        else:
-            return HttpResponse(file_content, content_type="text/html")
-    else:
-        return HttpResponse("File not found.")
 
 def viewFilingPath(request, path):
     baseDir = "C:/Users/pshar/Dropbox/Programming/SampleTexts/FilingsBySymbols"
