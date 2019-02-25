@@ -1,47 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load staticfiles %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/css/SingleSymbolRecordsPage.css' %}">    
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/css/SingleSymbolRecordsPage.css' %}">
     <meta charset="UTF-8">
     <title>Daily Market Returns</title>
 </head>
+
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="{% static 'polls/js/sortTableJS.js' %}"></script>
+    <script src="{% static 'polls/js/sortTable.js' %}"></script>
     <!-- The sidebar -->
-    <div class="sidebar">   
+    <div class="sidebar">
         <a class="active" href="#home">Home</a>
         <!-- Get the symbol in JS and then populate this link to filings of current symbol -->
         <a href="/polls/filings/{{ symbol }}/">Filings</a>
         <a href="#contact">Contact</a>
         <a href="#about">About</a>
-      </div>
-      
+    </div>
+
     <h1 id="pgHeader"></h1>
     <div style="overflow-x:auto;"></div>
     <table id="mytable" width="100%" bgcolor="#cccccc">
-            <col width="15%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="3%" span="1">
-            <col width="3%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="3%" span="1">
-            <col width="3%" span="1">
-            <col width="3%" span="1">
-            <col width="3%" span="1">
-            <col width="5%" span="1">
-            <col width="10%" span="1">
-            <col width="10%" span="1">
-            
-            <thead>
-                <tr valign="center">
+        <col width="15%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="3%" span="1">
+        <col width="3%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="3%" span="1">
+        <col width="3%" span="1">
+        <col width="3%" span="1">
+        <col width="3%" span="1">
+        <col width="5%" span="1">
+        <col width="10%" span="1">
+        <col width="10%" span="1">
+
+        <thead>
+            <tr valign="center">
                 <th id="company" class="th-sm" style="padding-left: 5px;" align="left" height="18">Company</th>
                 <th id="symbol" class="th-sm" style="padding-left: 5px;" align="center" height="18">Symbol</th>
                 <th id="open" class="th-sm" style="padding-left: 5px;" align="center" height="18">Open</th>
@@ -60,41 +62,41 @@
                 <th id="exchange" class="th-sm" style="padding-left: 5px;" align="center" height="18">Exchange</th>
                 <th id="date" class="th-sm" style="padding-left: 5px;" align="center" height="18">Date</th>
                 <th id="DlrVolume" class="th-sm" style="padding-left: 5px;" align="center" height="18">$Volume</th>
-            </thead>
-    
-    
-<tbody>
-        {% for row in pagedList %}
+        </thead>
+
+
+        <tbody>
+            {% for row in pagedList %}
             <tr class="p12" align="left" bgcolor="whitesmoke">
                 {% for item in row %}
-                    <td id="rowData" style="padding-left: 5px;" align="left" height="18">{{ item }}</td>
+                <td id="rowData" style="padding-left: 5px;" align="left" height="18">{{ item }}</td>
                 {% endfor %}
             </tr>
-        {% endfor %}
-    </tbody>
+            {% endfor %}
+        </tbody>
 
     </table>
-</div>
+    </div>
     <div class="pagination">
-            <span class="step-links">
-                {% if pagedList.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ pagedList.previous_page_number }}">previous</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ pagedList.number }} of {{ pagedList.paginator.num_pages }}.
-                </span>
-        
-                {% if pagedList.has_next %}
-                    <a href="?page={{ pagedList.next_page_number }}">next</a>
-                    <a href="?page={{ pagedList.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
+        <span class="step-links">
+            {% if pagedList.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ pagedList.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ pagedList.number }} of {{ pagedList.paginator.num_pages }}.
             </span>
+
+            {% if pagedList.has_next %}
+            <a href="?page={{ pagedList.next_page_number }}">next</a>
+            <a href="?page={{ pagedList.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
     </div>
 
-        
-            
-</body>
-</html>
 
+
+</body>
+
+</html>
