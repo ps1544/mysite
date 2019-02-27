@@ -2,32 +2,49 @@
 <html lang="en">
 
 <head>
-    <title>CSS Template</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/css/baseline.css' %}">
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    </style>
+  {% load staticfiles %}
+  {% load static %}
+
+  <link rel="stylesheet" type="text/css" href="{% static 'polls/css/baseline.css' %}">
+  <meta charset="UTF-8">
+  <title>{% block title %}MySite{% endblock %}</title>
+
+
 </head>
+
 <body>
+  <!--<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>-->
+  <!--<script src="{% static 'polls/js/filingsAndSearch.js' %}"></script>-->
 
-<h2>CSS Template using Grid</h2>
-<p>In this example, we have created a header, three unequal columns and a footer. On smaller screens, the columns will stack on top of each other.</p>
-<p>Resize the browser window to see the responsive effect.</p>
-<p><strong>Note:</strong> The Grid Layout Module is not supported in Internet Explorer or Edge 15 eand earlier versions.</p>
+  <body>
+    <div class="top">
+      {% block sidebar %}
+      <form action="/polls/search/" method="get">
+        <label for="search">Search: </label>
+        <input id="search" type="text" name="search" value="{{ search_prefill }}">
+        <input type="submit" value="OK">
+      </form>
+      {% endblock %}
+    </div>
 
-<div class="grid-container">
-  <div class="header">
-    <h2>Header</h2>
-  </div>
-  
-  <div class="left" style="background-color:#aaa;">Column</div>
-  <div class="middle" style="background-color:#bbb;">Column</div>  
-  <div class="right" style="background-color:#ccc;">Column</div>
-  
-  <div class="footer">
-    <p>Footer</p>
-  </div>
-</div>
+    <div class="leftbar">
+        {% block leftbar %}
+      <a class="active" href="#home">HOME</a>
+      <!-- Get the symbol in JS and then populate this link to filings of current symbol -->
+      <a href ="/polls/filings/{{ symbol }}/">FILINGS</a>
+      <a href="#contact">CONTACT</a>
+      <a href="#about">ABOUT</a>
+      {% endblock %}
+    </div>
+
+    <div class="contents">
+      {% block content %}{% endblock %}
+    </div>
+
+
+
+  </body>
 
 </body>
+
 </html>

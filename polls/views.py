@@ -23,6 +23,8 @@ from django.template import loader
 from os.path import isdir
 from os.path import abspath
 from urllib import *
+from collections import defaultdict
+
 
 def connectSQL():
     username = "psharma"
@@ -94,6 +96,7 @@ def dailyReturnsForAll(request):
         context = {
             'pagedList': pagedList,
             'dfrm_symbols': listSymbols,
+            'search_prefill' : "Search SEC filings",
         }
         return HttpResponse(template.render(context, request))
 
@@ -139,6 +142,7 @@ def dailyReturnsBySymbol(request, symbol):
             # 'dfrm_list': dfrm.values.tolist(),
             'pagedList': pagedList,
             'symbol': symbol.upper(),
+            'search_prefill' : "Search SEC filings",
         }
         return HttpResponse(template.render(context, request))
 
@@ -160,6 +164,7 @@ def retrieveDirsMatchingNames(baseDir, listNames):
                 retDirListing.append(path)
 
     return retDirListing
+
 
 
 def filingsTypesBySymbol(request, symbol):
@@ -191,6 +196,7 @@ def filingsTypesBySymbol(request, symbol):
         template = loader.get_template('polls/filingsTypesBySymbol.html')
         context = {
             'dirsFilings': dirsFilings,
+            'search_prefill' : "Search SEC filings",
         }
         return HttpResponse(template.render(context, request))
     else:
@@ -238,13 +244,15 @@ def viewFilingWoExt(request, symbol, filingType, fileName):
     symbol = "aapl"
     fileName = "a10qq32017712017htm.txt"
     count = "40" # TODO: Handle this properly as int
-    word_list = querySolr(symbol, fileName, count)
+    word_list = querySolrForKeywords(symbol, fileName, count)
+    search_prefill = "Company Name/Ticker"
     
     template = loader.get_template('polls/filingsAndSearch.html')
     context = {
         'contents': file_contents,
         'word_list' : word_list,
         'symbol' : symbol,
+        'search_prefill' : "Search SEC filings",
     }
     return HttpResponse(template.render(context, request))
     
@@ -296,19 +304,65 @@ def viewFilingPath(request, path):
         return HttpResponse("File not found.")
 
 
-def jstest(request):
-    filings = ["a", "b"]
-    template = loader.get_template('polls/jstest.html')
-    context = {
-        'filings': filings,
-    }
-    return HttpResponse(template.render(context, request))
-
 """
 Function to retrieve target word list from Solr
 """
 
-def querySolr(symbol, fileName, count):
+def coreSearch(request):
+    words = ""
+    results = queryForCoreSearch(words)
+    #pprint(results)
+    search_prefill = "Search SEC filings"
+    
+    template = loader.get_template('polls/searchresults.html')
+    context = {
+        'results' : results,
+        'search_prefill' : search_prefill,
+    }
+    return HttpResponse(template.render(context, request))
+
+def queryForCoreSearch(words):
+    
+    SOLR_BASE_URL = "http://localhost:8984/solr"
+    collection = "markets"
+    # TODO: Starting with sample query. Put in the entered words here later. 
+    url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q=credit+default&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&rows=100&start=0"
+    connection = urllib.request.urlopen(url)
+    httpResponse = json.load(connection)
+    
+    count = httpResponse['response']['numFound']
+    if (count > 100):
+        count = 100
+
+    entries = defaultdict(list)
+    i = 0
+    
+    for each in httpResponse['response']['docs']:
+        single_result = []   
+        symbol = each['symbol']
+        fileName = each['fileName']
+        score = each['score']
+        single_result.append(symbol)
+        single_result.append(fileName)
+        if ('word' in each):
+            word = each['word']
+            single_result.append(word)
+        elif ('sentence' in each):
+            sentence = each['sentence']
+            single_result.append(sentence)
+        single_result.append(score)
+
+        if (i < count):
+            entries[i].append(single_result)
+            i = i+1
+
+    #pprint(entries)
+
+    return entries
+
+
+
+def querySolrForKeywords(symbol, fileName, count):
     words = []
     SOLR_BASE_URL = "http://localhost:8984/solr"
     collection = "markets"
@@ -329,5 +383,8 @@ if __name__ == "__main__":
     request = "request"
     fileName = ""
     count = 1
-    querySolr(symbol, fileName, count)
+    words = "pfizer merck sanofi"
+    request = ""
+    coreSearch(request)
+    
     #dailyReturnsForAll(request)

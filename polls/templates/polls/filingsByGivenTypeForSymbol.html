@@ -1,3 +1,4 @@
+{% extends "polls/baseline.html" %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,12 +11,13 @@
 <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="{% static 'polls/js/filingCategoriesBySymbols.js' %}"></script>
-        
+        {% block content %}
     <ul>
         {% for filing in filings %}
             <li ><a id="filingType" href="/polls/filings/{{ filing }}">{{ filing }}</a></li>
         {% endfor %}
     </ul>
+    {% endblock %}
 </body>
 </html>
     

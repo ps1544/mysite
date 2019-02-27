@@ -1,82 +1,87 @@
+{% extends "polls/baseline.html" %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     {% load staticfiles %}
     {% load static %}
-    <link rel="stylesheet" type="text/css" href="{% static 'polls/css/SingleSymbolRecordsPage.css' %}">    
+    <link rel="stylesheet" type="text/css" href="{% static 'polls/css/SingleSymbolRecordsPage.css' %}">
     <meta charset="UTF-8">
-    <title>Daily Market Returns</title>
+    {% block title %}Daily Market Returns{% endblock %}
 </head>
+
 <body>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
-    <script src="{% static 'polls/js/sortTableJS.js' %}"></script>
+    <script src="{% static 'polls/js/sortTable.js' %}"></script>
+    {% block content %}
     <h2 id="pgHeader"></h2>
     <div style="overflow-x:auto;"></div>
     <table id="mytable" width="100%" bgcolor="#cccccc">
-            <col width="15%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="5%" span="1">
-            <col width="4%" span="1">
-            <col width="4%" span="1">
-            <col width="5%" span="1">
-            <col width="3%" span="1">
-            <col width="3%" span="1">
-            <col width="10%" span="1">
-            <col width="10%" span="1">
-            
-            <thead>
-                    <tr valign="center">
-                    <th id="company" class="th-sm" style="padding-left: 5px;" align="left" height="18">Company</th>
-                    <th id="symbol" class="th-sm" style="padding-left: 5px;" align="center" height="18">Symbol</th>
-                    <th id="open" class="th-sm" style="padding-left: 5px;" align="center" height="18">Open</th>
-                    <th id="high" class="th-sm" style="padding-left: 5px;" align="center" height="18">High</th>
-                    <th id="low" class="th-sm" style="padding-left: 5px;" align="center" height="18">Low</th>
-                    <th id="close" class="th-sm" style="padding-left: 5px;" align="center" height="18">Close</th>
-                    <th id="netchg" class="th-sm" style="padding-left: 5px;" align="center" height="18">Net Chg</th>
-                    <th id="pcntchg" class="th-sm" style="padding-left: 5px;" align="center" height="18">%Chg</th>
-                    <th id="vol" class="th-sm" style="padding-left: 5px;" align="center" height="18">Vol</th>
-                    <th id="pe" class="th-sm" style="padding-left: 5px;" align="center" height="18">PE</th>
-                    <th id="ytd" class="th-sm" style="padding-left: 5px;" align="center" height="18">YTD</th>
-                    <th id="exchange" class="th-sm" style="padding-left: 5px;" align="center" height="18">Exchange</th>
-                    <th id="DlrVolume" class="th-sm" style="padding-left: 5px;" align="center" height="18">$Volume</th>
-            </thead>
+        <col width="15%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="5%" span="1">
+        <col width="4%" span="1">
+        <col width="4%" span="1">
+        <col width="5%" span="1">
+        <col width="3%" span="1">
+        <col width="3%" span="1">
+        <col width="10%" span="1">
+        <col width="10%" span="1">
 
-       {% for row in pagedList %}
-                <tr class="p12" align="left" bgcolor="whitesmoke">
-                    {% for item in row %}
-                        {% if item in dfrm_symbols %}       
-                            <td style="padding-left: 5px;" align="left" height="18"><a href="/polls/dailyReturnsBySymbol/{{ item }}/">{{ item }}</a></td>
-                        {% else %}
-                            <td id="rowData" style="padding-left: 5px;" align="right" height="18">{{ item }}</td>
-                        {% endif %}
-                    {% endfor %}
-                </tr>
+        <thead>
+            <tr valign="center">
+                <th id="company" class="th-sm" style="padding-left: 5px;" align="left" height="18">COMPANY</th>
+                <th id="symbol" class="th-sm" style="padding-left: 5px;" align="center" height="18">SYMBOL</th>
+                <th id="open" class="th-sm" style="padding-left: 5px;" align="center" height="18">OPEN</th>
+                <th id="high" class="th-sm" style="padding-left: 5px;" align="center" height="18">HIGH</th>
+                <th id="low" class="th-sm" style="padding-left: 5px;" align="center" height="18">LOW</th>
+                <th id="close" class="th-sm" style="padding-left: 5px;" align="center" height="18">CLOSE</th>
+                <th id="netchg" class="th-sm" style="padding-left: 5px;" align="center" height="18">NET CHNG</th>
+                <th id="pcntchg" class="th-sm" style="padding-left: 5px;" align="center" height="18">%CHNG</th>
+                <th id="vol" class="th-sm" style="padding-left: 5px;" align="center" height="18">VOLUME</th>
+                <th id="pe" class="th-sm" style="padding-left: 5px;" align="center" height="18">PE</th>
+                <th id="ytd" class="th-sm" style="padding-left: 5px;" align="center" height="18">YTD</th>
+                <th id="exchange" class="th-sm" style="padding-left: 5px;" align="center" height="18">EXCHANGE</th>
+                <th id="DlrVolume" class="th-sm" style="padding-left: 5px;" align="center" height="18">$VOLUME</th>
+        </thead>
+
+        {% for row in pagedList %}
+        <tr class="p12" align="left" bgcolor="whitesmoke">
+            {% for item in row %}
+            {% if item in dfrm_symbols %}
+            <td style="padding-left: 5px;" align="left" height="18"><a
+                    href="/polls/dailyReturnsBySymbol/{{ item }}/">{{ item }}</a></td>
+            {% else %}
+            <td id="rowData" style="padding-left: 5px;" align="right" height="18">{{ item }}</td>
+            {% endif %}
+            {% endfor %}
+        </tr>
         {% endfor %}
-    
-        
+
+
     </table>
 
     <div class="pagination">
-            <span class="step-links">
-                {% if pagedList.has_previous %}
-                    <a href="?page=1">&laquo; first</a>
-                    <a href="?page={{ pagedList.previous_page_number }}">previous</a>
-                {% endif %}
-        
-                <span class="current">
-                    Page {{ pagedList.number }} of {{ pagedList.paginator.num_pages }}.
-                </span>
-        
-                {% if pagedList.has_next %}
-                    <a href="?page={{ pagedList.next_page_number }}">next</a>
-                    <a href="?page={{ pagedList.paginator.num_pages }}">last &raquo;</a>
-                {% endif %}
+        <span class="step-links">
+            {% if pagedList.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ pagedList.previous_page_number }}">previous</a>
+            {% endif %}
+
+            <span class="current">
+                Page {{ pagedList.number }} of {{ pagedList.paginator.num_pages }}.
             </span>
+
+            {% if pagedList.has_next %}
+            <a href="?page={{ pagedList.next_page_number }}">next</a>
+            <a href="?page={{ pagedList.paginator.num_pages }}">last &raquo;</a>
+            {% endif %}
+        </span>
     </div>
-
+    {% endblock %}
 </body>
-</html>
 
+</html>

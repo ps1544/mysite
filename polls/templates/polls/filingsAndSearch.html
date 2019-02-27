@@ -1,3 +1,4 @@
+{% extends "polls/baseline.html" %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,48 +7,34 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'polls/css/filingAndSearch.css' %}">
         <meta charset="UTF-8">
-        <title>Daily Market Returns</title>
-        <title>Filing Text & Search</title>
+        {% block title %}Filing Text & Search{% endblock %}
+
 </head>
 
 <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="{% static 'polls/js/filingsAndSearch.js' %}"></script>
+        {% block content %}
 
-        <body>
-                <div class="top">
+        
 
-                </div>
 
-                <div class="leftbar">
-                        <a class="active" href="#home">Home</a>
-                        <!-- Get the symbol in JS and then populate this link to filings of current symbol -->
-                        <a href="/polls/filings/{{ symbol }}/">Filings</a>
-                        <a href="#contact">Contact</a>
-                        <a href="#about">About</a>
-                </div>
+        <!--{{contents}}-->
+        <div id="includedContents"> </div>
+        {% endblock %}
 
-                
+        <div class="rightbar">
+                <ul>
+                        {% for word in word_list %}
+                        <a href="#word">{{ word }}</a>
+                        <!--<li></li>-->
+                        {% endfor %}
+                </ul>
 
-                        <!--{{contents}}-->
-                        <div id="includedContents">
-                        </div>
-                
+        </div>
 
 
 
-                <div class="rightbar">
-                        <ul>
-                                {% for word in word_list %}
-                                <a href="#word">{{ word }}</a>
-                                <!--<li></li>-->
-                                {% endfor %}
-                        </ul>
-
-                </div>
-
-
-        </body>
 
 </body>
 

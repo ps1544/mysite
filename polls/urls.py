@@ -16,6 +16,10 @@ urlpatterns = [
     
     # ex: /polls/dailyReturns/
     path('dailyReturns/', views.dailyReturnsForAll, name='dailyReturnsForAll'),
+
+    # ex: /polls/search/
+    path('search/', views.coreSearch, name='coreSearch'),
+    
     # ex: /polls/dailyReturns/<SYMBOL>
     path('dailyReturnsBySymbol/<slug:symbol>/', views.dailyReturnsBySymbol, name='dailyReturnsBySymbol'),
     
