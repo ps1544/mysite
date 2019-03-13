@@ -14,16 +14,22 @@ from sqlalchemy import create_engine
 from scipy import stats
 from numpy import newaxis
 from tensorflow.contrib.layers import fully_connected
+
 from django.core.paginator import EmptyPage, PageNotAnInteger, Paginator
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import Http404
 from django.shortcuts import render
 from django.template import loader
+from django.http import HttpResponseRedirect
+from django.shortcuts import render
+
 from os.path import isdir
 from os.path import abspath
 from urllib import *
 from collections import defaultdict
+
+from .forms import NameForm
 
 
 def connectSQL():
@@ -309,24 +315,50 @@ Function to retrieve target word list from Solr
 """
 
 def coreSearch(request):
-    words = ""
-    results = queryForCoreSearch(words)
     #pprint(results)
     search_prefill = "Search SEC filings"
-    
-    template = loader.get_template('polls/searchresults.html')
-    context = {
-        'results' : results,
-        'search_prefill' : search_prefill,
-    }
+
+    # if this is a GET request we need to process the form data
+    if request.method == 'GET':
+        # create a form instance and populate it with data from the request:
+        form = NameForm(request.GET)
+        # check whether it's valid:
+        if form.is_valid():
+            words = form.cleaned_data['search_form']
+            print(words) 
+            results = queryForCoreSearch(words)
+            template = loader.get_template('polls/searchresults.html')
+            context = {
+                'results' : results,
+                'search_prefill' : search_prefill,
+                'form': form,
+            }
+    # TODO: Handle POST in some default manner as well
+    else:
+        form = NameForm()
+
     return HttpResponse(template.render(context, request))
 
-def queryForCoreSearch(words):
+def queryForCoreSearch(listWords):
     
     SOLR_BASE_URL = "http://localhost:8984/solr"
     collection = "markets"
-    # TODO: Starting with sample query. Put in the entered words here later. 
-    url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q=credit+default&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&rows=100&start=0"
+
+    """
+    words = ""
+    if (listWords == ""):
+        listWords = ["liability", "credit", "risk"]
+    words = listWords.split()
+    for word in words:
+        words += ('%2B')+word
+    """
+    searchPattern = ""
+    words = listWords.split()
+    for word in words:
+        searchPattern += ('%2B')+word
+    print(searchPattern) 
+    
+    url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q="+searchPattern+"&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&rows=100&start=0"
     connection = urllib.request.urlopen(url)
     httpResponse = json.load(connection)
     
@@ -339,16 +371,16 @@ def queryForCoreSearch(words):
     
     for each in httpResponse['response']['docs']:
         single_result = []   
-        symbol = each['symbol']
-        fileName = each['fileName']
+        symbol = (each['symbol'][0]).replace("\'", "")
+        fileName = each['fileName'][0].replace("'", "")
         score = each['score']
         single_result.append(symbol)
         single_result.append(fileName)
         if ('word' in each):
-            word = each['word']
+            word = each['word'][0].replace("'", "")
             single_result.append(word)
         elif ('sentence' in each):
-            sentence = each['sentence']
+            sentence = each['sentence'][0].replace("'", "")
             single_result.append(sentence)
         single_result.append(score)
 
@@ -357,8 +389,9 @@ def queryForCoreSearch(words):
             i = i+1
 
     #pprint(entries)
-
-    return entries
+    # See: https://stackoverflow.com/questions/32813500/items-not-working-on-defaultdict-in-django-template
+    dictEntries = dict(entries)
+    return dictEntries
 
 
 

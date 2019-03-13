@@ -20,8 +20,10 @@
     <div class="top">
       {% block sidebar %}
       <form action="/polls/search/" method="get">
-        <label for="search">Search: </label>
-        <input id="search" type="text" name="search" value="{{ search_prefill }}">
+        {% csrf_token %}
+        
+        <!--<label for="search">Search: </label>-->
+        <input id="search" type="text" name="search_form" value="{{ search_prefill }}">
         <input type="submit" value="OK">
       </form>
       {% endblock %}
@@ -37,8 +39,11 @@
       {% endblock %}
     </div>
 
+    
     <div class="contents">
-      {% block content %}{% endblock %}
+      {% block contents %}
+      
+      {% endblock %}
     </div>
 
 
