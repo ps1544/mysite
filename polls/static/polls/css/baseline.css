@@ -49,7 +49,7 @@ body {
   left:10%; top:10%; bottom: 0;
   margin: 0;
   padding: 0;
-  width: 100%;
+  width: 90%;
   background-color: lightgrey;
   height: 100%;
   overflow: auto;
@@ -57,11 +57,7 @@ body {
 
 table {
   border-collapse: collapse;
-  left:10%; top:10%; bottom: 0;
-  width: 90%;
-  height: 100%;
   background-color:"#cccccc"
-
 }
 
 th, td {

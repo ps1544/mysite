@@ -15,8 +15,8 @@
     
 
     <!--{{contents}}-->
-    {% block contents %}
     <div class="contents">
+        {% block contents %}
         <table id="mytable" width="100%" bgcolor="#cccccc">
             <tbody>
                 {% for key, value in results.items %}
@@ -34,8 +34,9 @@
                 {% endfor %}
             </tbody>
         </table>
+        {% endblock %}
     </div>
-    {% endblock %}
+
 
 
 
