@@ -321,7 +321,11 @@ def coreSearch(request):
     context['search_prefill'] = search_prefill
 
     # if this is a GET request we need to process the form data
-    if request.method == 'GET':
+    if request.method == 'POST':
+        form = NameForm()
+        context['form'] = form
+        
+    else:
         # create a form instance and populate it with data from the request:
         form = NameForm(request.GET)
         
@@ -334,10 +338,6 @@ def coreSearch(request):
             context['form'] = form
             
     # TODO: Handle POST in some default manner as well
-    else:
-        form = NameForm()
-        context['form'] = form
-        
 
     # TODO: Template is not defined in certain cases. Handle all scenarios
     return HttpResponse(template.render(context, request))
