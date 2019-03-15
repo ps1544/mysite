@@ -19,12 +19,20 @@
   <body>
     <div class="top">
       {% block sidebar %}
+      
       <form action="/polls/search/" method="get">
         {% csrf_token %}
+        <ul class="nav navbar-nav navbar-right">
         
-        <!--<label for="search">Search: </label>-->
-        <input id="search" type="text" name="search_form" value="{{ search_prefill }}">
-        <input type="submit" value="OK">
+        <li>
+            <!--start search-->
+            <div id="search-container">
+                <input class="search" id="search" type="text" name="search_form" value="{{ search_prefill }}">
+                <input type="submit" value="OK">
+            </div>
+          </li>
+          </ul>
+        
       </form>
       {% endblock %}
     </div>
@@ -36,6 +44,7 @@
       <a href ="/polls/filings/{{ symbol }}/">FILINGS</a>
       <a href="#contact">CONTACT</a>
       <a href="#about">ABOUT</a>
+      <a href="#blogs">BLOGS</a>
       {% endblock %}
     </div>
 
