@@ -18,17 +18,9 @@
             {% block sidebar %}
             <form action="/polls/search/" method="get">
               {% csrf_token %}
-              <ul class="nav navbar-nav navbar-right">
-              
-              <li>
-                  <!--start search-->
-                  <div id="search-container">
-                      <!--<input class="search" id="search" type="text" name="search_form" value="{{ search_prefill }}">-->
-                      {{ form }}
-                      <input type="submit" value="OK">
-                  </div>
-                </li>
-                </ul>
+              <!--<input class="search" id="search" type="text" name="search_form" value="{{ search_prefill }}">-->
+              {{ form }}
+              <input type="submit" value="OK">
               
             </form>
             {% endblock %}

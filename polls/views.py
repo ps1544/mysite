@@ -315,37 +315,29 @@ Function to retrieve target word list from Solr
 """
 
 def coreSearch(request):
-    #pprint(results)
     search_prefill = "Search SEC filings"
     template = loader.get_template('polls/searchresults.html')
+    context = {}
+    context['search_prefill'] = search_prefill
 
     # if this is a GET request we need to process the form data
     if request.method == 'GET':
         # create a form instance and populate it with data from the request:
         form = NameForm(request.GET)
-        context = {
-            'search_prefill' : search_prefill,
-            'form': form,
-        }
-
+        
         # check whether it's valid:
         if form.is_valid():
             words = form.cleaned_data['search_form']
             print(words) 
             results = queryForCoreSearch(words)
-            context = {
-                'results' : results,
-                'search_prefill' : search_prefill,
-                'form': form,
-            }
+            context['results'] = results
+            context['form'] = form
+            
     # TODO: Handle POST in some default manner as well
     else:
         form = NameForm()
-        context = {
-            'search_prefill' : search_prefill,
-            'form': form,
-        }
-
+        context['form'] = form
+        
 
     # TODO: Template is not defined in certain cases. Handle all scenarios
     return HttpResponse(template.render(context, request))
