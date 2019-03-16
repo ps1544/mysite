@@ -6,6 +6,3 @@ class NameForm(forms.Form):
         max_length=100, 
     #   help_text='A valid email address, please.',
         required=False)
-    
-    
-    

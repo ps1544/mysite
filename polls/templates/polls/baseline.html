@@ -25,16 +25,16 @@
 
     <div class="leftbar">
         {% block leftbar %}
-      <a class="active" href="#home">HOME</a>
+      <!--<a class="active" href="#home">HOME</a>-->
+      <a href ="/polls/dailyReturns/">HOME</a>
       <a href ="/polls/search/">SEARCH</a>
       <!-- Get the symbol in JS and then populate this link to filings of current symbol -->
-      <a href ="/polls/filings/{{ symbol }}/">FILINGS</a>
+      <a href ="/polls/filings/">FILINGS</a>
       <a href="#contact">CONTACT</a>
       <a href="#about">ABOUT</a>
       <a href="#blogs">BLOGS</a>
       {% endblock %}
     </div>
-
     
     <div class="contents">
       {% block contents %}
