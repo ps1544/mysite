@@ -25,7 +25,7 @@ urlpatterns = [
     path('dailyReturnsBySymbol/<slug:symbol>/', views.dailyReturnsBySymbol, name='dailyReturnsBySymbol'),
     
     # ex: /polls/filings/
-    #path('filings/', viewsFilings.filingsBasePage, name='filingsBasePage'),
+    path('filings/', viewsFilings.filingsBasePage, name='filingsBasePage'),
     
     # ex: /polls/filings/<SYMBOL>
     path('filings/<slug:symbol>/', viewsFilings.filingsTypesBySymbol, name='filingsTypesBySymbol'),

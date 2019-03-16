@@ -29,7 +29,9 @@ from os.path import abspath
 from urllib import *
 from collections import defaultdict
 
-from .forms import NameForm
+from .FormNLPSearch import FormNLPSearch
+from .FormFilingSearch import FormFilingSearch
+
 
 
 def connectSQL():
@@ -64,11 +66,11 @@ def filingsBasePage(request):
 
     # if this is a GET request we need to process the form data
     if request.method == 'POST':
-        form = NameForm()
+        form = FormFilingSearch()
         context['form'] = form
     else:
         # create a form instance and populate it with data from the request:
-        form = NameForm(request.GET)
+        form = FormFilingSearch(request.GET)
         
         # check whether it's valid:
         if form.is_valid():
