@@ -11,14 +11,19 @@
 <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="{% static 'polls/js/filingCategoriesBySymbols.js' %}"></script>
-        {% block content %}
         
-    <ul>
+    <!--{{contents}}-->
+    <div class="contents">
+        {% block contents %}
+    
+        <ul>
         {% for item in dirsFilings %}
             <li ><a id="filingType" href="/polls/filings/{{ item }}">{{ item }}</a></li>
         {% endfor %}
-    </ul>
-    {% endblock %}
+        </ul>
+        {% endblock %}
+    </div>
+
 </body>
 </html>
     

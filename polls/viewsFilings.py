@@ -56,27 +56,26 @@ def executeQuery(connection, query):
 """
 def filingsBasePage(request):
     
-    connection = connectSQL()
-    tblNameCurrent = "equities_2018"
-
     search_prefill = "Company Name/Symbol"
     template = loader.get_template('polls/filingsBasePage.html')
     context = {}
     context['search_prefill'] = search_prefill
 
-    # if this is a GET request we need to process the form data
     if request.method == 'POST':
         form = FormFilingSearch()
         context['form'] = form
     else:
         # create a form instance and populate it with data from the request:
         form = FormFilingSearch(request.GET)
+        context['form'] = form
         
         # check whether it's valid:
         if form.is_valid():
             symbol = form.cleaned_data['searchFilings_form']
             print("Filings for: "+symbol)
             context['form'] = form
+            return HttpResponseRedirect("/polls/filings/"+symbol+"/")
+
             
     # TODO: Template is not defined in certain cases. Handle all scenarios
     return HttpResponse(template.render(context, request))
@@ -120,8 +119,8 @@ def filingsTypesBySymbol(request, symbol):
 
     dirsFilings = []
 
-    if symbol in symbols:
-        path = os.path.join(baseDir, symbol)
+    if symbol.upper() in symbols:
+        path = os.path.join(baseDir, symbol.upper())
         dirsFilingTypes = os.listdir(path)
         for dirFilingTypes in dirsFilingTypes:
             dirsFilings.append(symbol+"/"+dirFilingTypes)
@@ -132,8 +131,10 @@ def filingsTypesBySymbol(request, symbol):
             'search_prefill' : "Search SEC filings",
         }
         return HttpResponse(template.render(context, request))
-    else:
-        return HttpResponse("Data NOT found for symbol", symbol)
+    # Else condition handled in Django FORM
+
+    #else:
+    #    return HttpResponse("Data NOT found for symbol", symbol)
 
     connection.close()
 
@@ -173,16 +174,20 @@ def viewFilingWoExt(request, symbol, filingType, fileName):
         file_contents = f.read()
         f.close()
 
+    """
+    These values were hard-coded for testing before integration code was avalable. 
     #word_list = ["red", "orange", "green"]
-    symbol = "aapl"
-    fileName = "a10qq32017712017htm.txt"
-    count = "40" # TODO: Handle this properly as int
+    #symbol = "aapl"
+    #fileName = "a10qq32017712017htm.txt"
+    """
+    fileName = fileName+".txt" # Workaround
+    count = "100000" # TODO: Handle this properly as int
     word_list = querySolrForKeywords(symbol, fileName, count)
     search_prefill = "Company Name/Ticker"
     
     template = loader.get_template('polls/filingsAndSearch.html')
     context = {
-        'contents': file_contents,
+        'text_contents': file_contents,
         'word_list' : word_list,
         'symbol' : symbol,
         'search_prefill' : "Search SEC filings",

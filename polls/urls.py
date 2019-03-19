@@ -27,6 +27,7 @@ urlpatterns = [
     # ex: /polls/filings/
     path('filings/', viewsFilings.filingsBasePage, name='filingsBasePage'),
     
+    
     # ex: /polls/filings/<SYMBOL>
     path('filings/<slug:symbol>/', viewsFilings.filingsTypesBySymbol, name='filingsTypesBySymbol'),
     # ex: /polls/filings/<SYMBOL>/<Filing_Type>

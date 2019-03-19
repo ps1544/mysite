@@ -1,4 +1,3 @@
-{% extends "polls/baseline.html" %}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,30 +6,46 @@
         {% load static %}
         <link rel="stylesheet" type="text/css" href="{% static 'polls/css/filingAndSearch.css' %}">
         <meta charset="UTF-8">
-        {% block title %}Filing Text & Search{% endblock %}
+        
 
 </head>
 
 <body>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
         <script src="{% static 'polls/js/filingsAndSearch.js' %}"></script>
-        {% block content %}
 
+        <div class="top"> </div>
+                  
+        <div class="leftbar">
         
-
-
-        <!--{{contents}}-->
-        <div id="includedContents"> </div>
-        {% endblock %}
+                <!--<a class="active" href="#home">HOME</a>-->
+                <a href ="/polls/dailyReturns/">HOME</a>
+                <a href ="/polls/search/">SEARCH</a>
+                <!-- Populate a default symbol -->
+                <a href ="/polls/filings/">FILINGS</a>
+                <!-- Call it 'experimental' and showcase the data w/ plots. Also have error rates for older data -->
+                <a href="#projections">PROJECTIONS</a>
+                <!-- Call it upcoming. Don't know right now what this will eventually contain. -->
+                <a href="#pomgmt">PORTFOLIO</a>
+                <!-- Jupyter Notebooks -->
+                <a href="#blogs">BLOGS</a>
+        </div>
+        
+        <div class="contents" id="contents">
+                
+                
+        </div>
+                  
 
         <div class="rightbar">
+                        
                 <ul>
                         {% for word in word_list %}
                         <a href="#word">{{ word }}</a>
                         <!--<li></li>-->
                         {% endfor %}
                 </ul>
-
+        
         </div>
 
 

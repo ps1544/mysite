@@ -1,10 +1,21 @@
 // Enable no-conflict mode
-var $j = jQuery.noConflict();
-$j(document).ready(function () {
-    
-    $j(function (contents) {
-        //$("#includedContents").load("C:\Users\pshar\Dropbox\Programming\SampleTexts\FilingsBySymbols\AAPL\10-K\a10k20179302017htm", function());
-        $j("#includedContents").load("a10qq32017712017htm");
-        alert( "Load was performed." );
-    });
+/*
+PXS: This function in it's current state is at-least getting called. 
+That's a start in itself. Now, I need to figure out why is it repeating the 
+HTML contents". 
+
+*/
+jQuery(document).ready(function () {
+    function load_home(e) {
+        // document.write("a10qq32017712017htm");
+        //fetch("a10qq32017712017htm" /*, options */)
+        fetch("/polls/dailyReturns/" /*, options */)
+            .then((response) => response.text())
+            .then((html) => {
+                document.getElementById("contents").innerHTML = html;
+            })
+            .catch((error) => {
+                console.warn(error);
+            });
+    }
 });
