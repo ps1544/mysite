@@ -188,12 +188,37 @@ def viewFilingWoExt(request, symbol, filingType, fileName):
     template = loader.get_template('polls/filingsAndSearch.html')
     context = {
         'text_contents': file_contents,
+        'filingType' : filingType,
+        'fileName' : fileName.replace('.txt', ''),
         'word_list' : word_list,
         'symbol' : symbol,
         'search_prefill' : "Search SEC filings",
     }
     return HttpResponse(template.render(context, request))
+
+"""
+Handles URLs that had any regex (file ext, hyphens) removed. Removal of
+regex patterns is essentially a hack until I can make regex url work in 
+Django. Posted on Stack Overflow as well but to no avail. 
+"""
+def viewFilingWoExtFallback(request, symbol, filingType, fileName):
+    baseDir = "C:/Users/pshar/Dropbox/Programming/SampleTexts/FilingsBySymbols"
+    #fileName = fileName + ".htm"
+    path = os.path.join(baseDir, symbol, filingType, fileName)
+    print(path)
+
+    if os.path.exists(path) and os.path.isfile(path):
+        f = open(path, 'r')
+        file_contents = f.read()
+        f.close()
+
     
+    template = loader.get_template('polls/filingsAndSearchFallback.html')
+    context = {
+        'file_contents' : file_contents,
+    }
+    return HttpResponse(template.render(context, request))
+
 """
 Added for regex based URL. Didn't work but keep it in case
 a fix is later found. 
@@ -244,7 +269,10 @@ def viewFilingPath(request, path):
 def querySolrForKeywords(symbol, fileName, count):
     words = []
     SOLR_BASE_URL = "http://localhost:8984/solr"
-    collection = "markets"
+    collection = "markets3"
+    # Workaround bcoz UI couldnt parse extension but backend does keep extension for reference
+    # TODO: Adjust this once UI side is fixed. 
+    # fileName = fileName+".txt" 
     url = SOLR_BASE_URL+"/"+collection+"/select?defType=lucene&q=*:*&fl=word+pos+symbol+fileName&fq=fileName:\""+fileName+"\"&fq=symbol:"+symbol+"&fq=pos:NNP&rows="+count+"&start=0"
     connection = urllib.request.urlopen(url)
     httpResponse = json.load(connection)

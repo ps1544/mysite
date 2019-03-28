@@ -191,7 +191,7 @@ def coreSearch(request):
 def queryForCoreSearch(listWords):
     
     SOLR_BASE_URL = "http://localhost:8984/solr"
-    collection = "markets"
+    collection = "markets3"
 
     """
     words = ""
@@ -206,36 +206,82 @@ def queryForCoreSearch(listWords):
     for word in words:
         searchPattern += ('%2B')+word
     print(searchPattern) 
-    
-    url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q="+searchPattern+"&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&rows=100&start=0"
-    connection = urllib.request.urlopen(url)
-    httpResponse = json.load(connection)
-    
-    count = httpResponse['response']['numFound']
-    if (count > 100):
-        count = 100
-
     entries = defaultdict(list)
-    i = 0
-    
-    for each in httpResponse['response']['docs']:
-        single_result = []   
-        symbol = (each['symbol'][0]).replace("\'", "")
-        fileName = each['fileName'][0].replace("'", "")
-        score = each['score']
-        single_result.append(symbol)
-        single_result.append(fileName)
-        if ('word' in each):
-            word = each['word'][0].replace("'", "")
-            single_result.append(word)
-        elif ('sentence' in each):
-            sentence = each['sentence'][0].replace("'", "")
-            single_result.append(sentence)
-        single_result.append(score)
 
-        if (i < count):
-            entries[i].append(single_result)
-            i = i+1
+    # The format of JSON search response is different based on whether grouping is enabled or not, handle that here. 
+    # TODO: P1: Requires better design so different types of grouping, faceting, filter, or plain flat results can be handled w/o repetitive code
+    groupingEnabled = False
+
+    if (groupingEnabled == True):
+        url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q="+searchPattern+"&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&rows=100&start=0"
+        connection = urllib.request.urlopen(url)
+        httpResponse = json.load(connection)
+        
+        count = httpResponse['response']['numFound']
+        if (count > 100):
+            count = 100
+
+        i = 0
+        
+        for each in httpResponse['response']['docs']:
+            single_result = []   
+            symbol = (each['symbol']).replace("\'", "")
+            fileName = each['fileName'].replace("'", "")
+            score = each['score']
+            single_result.append(symbol)
+            single_result.append(fileName)
+            if ('word' in each):
+                word = each['word'].replace("'", "")
+                single_result.append(word)
+            elif ('sentence' in each):
+                sentence = each['sentence'].replace("'", "")
+                single_result.append(sentence)
+            single_result.append(score)
+
+            if (i < count):
+                entries[i].append(single_result)
+                i = i+1
+    
+    else: 
+        """
+        The code here requires changes. Code added on 2019-03-28 to support grouping based results to avoid duplicates. 
+        1. The word or lemma is not hadled here because such annotations are currently suspended. 
+        2. I'm not much excited about how I am parsing the JSON into records. Find a better way if feasible.
+        3. Lots of duplicate code with (above) parsing of non-grouped results. 
+        """
+        grpStatus = "true"
+        groupFld = "sentHash"
+        url = SOLR_BASE_URL+"/"+collection+"/select?defType=dismax&q="+searchPattern+"&fl=*,score&qf=sentence^10.0+word^1.0+lemma^1.0&group="+grpStatus+"&group%2Efield="+groupFld+"&rows=100&start=0"
+        connection = urllib.request.urlopen(url)
+        httpResponse = json.load(connection)
+
+        count = 0
+        data = httpResponse['grouped']['sentHash']['groups']
+        for item in data:
+            count += 1
+        if (count > 100):
+            count = 100
+
+        i = 0
+        for each in httpResponse['grouped']['sentHash']['groups']:
+            single_result = []   
+    
+            record = httpResponse['grouped']['sentHash']['groups'][i]['doclist']['docs'][0]
+            
+            fileName = record['fileName']
+            symbol = record['symbol']
+            score = record['score']
+            sentence = record['sentence']
+
+            single_result.append(symbol)
+            single_result.append(fileName)
+            single_result.append(score)
+            single_result.append(sentence)
+            
+            if (i < count):
+                entries[i].append(single_result)
+                i = i+1
+        
 
     #pprint(entries)
     # See: https://stackoverflow.com/questions/32813500/items-not-working-on-defaultdict-in-django-template

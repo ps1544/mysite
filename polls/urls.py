@@ -32,8 +32,12 @@ urlpatterns = [
     path('filings/<slug:symbol>/', viewsFilings.filingsTypesBySymbol, name='filingsTypesBySymbol'),
     # ex: /polls/filings/<SYMBOL>/<Filing_Type>
     path('filings/<slug:symbol>/<slug:filingType>/', viewsFilings.filingsByGivenTypeForSymbol, name='filingsByGivenTypeForSymbol'),
+    
     # ex: /polls/filings/<SYMBOL>/<Filing_Type>/<fileName.htm>
-    path('filings/<slug:symbol>/<slug:filingType>/<slug:fileName>', viewsFilings.viewFilingWoExt, name='viewFilingWoExt'),
+    path('filings/<slug:symbol>/<slug:filingType>/<slug:fileName>/', viewsFilings.viewFilingWoExt, name='viewFilingWoExt'),
+
+    # ex: /polls/filings/<SYMBOL>/<Filing_Type>/<fileName.htm>
+    path('filings/<slug:symbol>/<slug:filingType>/<slug:fileName>/view/', viewsFilings.viewFilingWoExtFallback, name='viewFilingWoExtFallback'),
 
 
     #path('path', viewsFilings.viewFilingPath, name='viewFilingPath'),
